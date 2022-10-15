@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">StopwatchEmpatica</string>
     <string name="main_screen">Main</string>
+    <string name="distance">Distance</string>
+    <string name="input_helper">Input a distance in meters</string>
+    <string name="next">Continue -></string>
 </resources>
