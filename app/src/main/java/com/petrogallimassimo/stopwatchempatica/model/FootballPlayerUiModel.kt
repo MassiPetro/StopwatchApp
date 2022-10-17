@@ -1,4 +1,4 @@
-package com.petrogallimassimo.stopwatchempatica.datasource
+package com.petrogallimassimo.stopwatchempatica.model
 
 open class FootballPlayerUiModel(
     val title: String? = null,

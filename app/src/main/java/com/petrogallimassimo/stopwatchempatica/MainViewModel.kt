@@ -1,10 +1,10 @@
-package com.petrogallimassimo.stopwatchempatica.ui
+package com.petrogallimassimo.stopwatchempatica
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.petrogallimassimo.stopwatchempatica.datasource.FootballPlayerUiModel
+import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerUiModel
 import com.petrogallimassimo.stopwatchempatica.datasource.Repository
 import kotlinx.coroutines.launch
 

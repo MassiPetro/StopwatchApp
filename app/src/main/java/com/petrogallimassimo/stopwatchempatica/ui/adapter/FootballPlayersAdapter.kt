@@ -1,4 +1,4 @@
-package com.petrogallimassimo.stopwatchempatica.ui
+package com.petrogallimassimo.stopwatchempatica.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.petrogallimassimo.stopwatchempatica.databinding.ItemFootballPlayerBinding
-import com.petrogallimassimo.stopwatchempatica.datasource.FootballPlayerUiModel
+import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerUiModel
 
 class FootballPlayersAdapter(
     private val context: Context,

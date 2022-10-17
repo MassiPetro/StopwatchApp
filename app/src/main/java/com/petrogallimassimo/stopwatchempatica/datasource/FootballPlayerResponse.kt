@@ -1,5 +1,7 @@
 package com.petrogallimassimo.stopwatchempatica.datasource
 
+import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerUiModel
+
 data class FootballPlayerResponse(
     val results: List<FootballPlayerResponseObject>? = null
 ) {

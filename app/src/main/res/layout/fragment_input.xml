@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="180dp"
             android:layout_marginStart="50dp"
-            android:text="-"
+            android:text="@string/back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
