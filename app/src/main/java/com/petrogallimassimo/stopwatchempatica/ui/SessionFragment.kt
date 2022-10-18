@@ -29,6 +29,7 @@ class SessionFragment : Fragment() {
     private val lapsAdapter = LapsAdapter()
 
     private val timer = Timer()
+    private var previousTime = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -114,7 +115,9 @@ class SessionFragment : Fragment() {
 
     private fun lapAction() {
         lapsAdapter.addLap(getTime())
-        viewModel.lapSeconds = viewModel.lapSeconds.plus(viewModel.secondsFromString(getTime()))
+        viewModel.lapSeconds =
+            viewModel.lapSeconds.plus(viewModel.secondsFromString(getTime()) - previousTime)
+        previousTime = viewModel.secondsFromString(getTime())
     }
 
     private fun resetAction() {
@@ -173,9 +176,18 @@ class SessionFragment : Fragment() {
         with(binding) {
             lapsAdapter.lapsNumberLiveData.observe(viewLifecycleOwner) {
                 tvLapsValue.text = it.toString()
-                tvAvgTimeLapValue.text = viewModel.avgTimeLap(it).toString()
+                tvAvgTimeLapValue.text = viewModel.minutesStringFromLong(viewModel.avgTimeLap(it))
                 tvAvgSpeedValue.text =
-                    viewModel.avgSpeed(sharedViewModel.selectedDistanceMeters, viewModel.avgTimeLap(it))
+                    viewModel.avgSpeed(
+                        sharedViewModel.selectedDistanceMeters,
+                        viewModel.avgTimeLap(it)
+                    )
+                tvPeakSpeedValue.text =
+                    viewModel.peakSpeed(
+                        sharedViewModel.selectedDistanceMeters,
+                        viewModel.secondsFromString(getTime())
+                    )
+                tvCadenceValue.text = viewModel.cadenceValue(it)
             }
         }
     }

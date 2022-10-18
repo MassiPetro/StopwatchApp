@@ -22,7 +22,6 @@ class LapsAdapter :
     private var lapNumber = 1
 
     val lapsNumberLiveData = MutableLiveData<Int>()
-    val avgTimeLap = MutableLiveData<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LapsViewHolder {
         return LapsViewHolder(

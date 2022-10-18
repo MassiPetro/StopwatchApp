@@ -2,12 +2,12 @@ package com.petrogallimassimo.stopwatchempatica.ui
 
 import androidx.lifecycle.ViewModel
 import java.text.DecimalFormat
-import kotlin.math.round
-import kotlin.math.truncate
 
 class SessionViewModel : ViewModel() {
 
     var lapSeconds: Long = 0
+    private var smallestTime = Long.MAX_VALUE
+    private var previousTime = 0L
 
     fun timeStringFromLong(ms: Long): String {
         val seconds = (ms / 1000) % 60
@@ -16,8 +16,18 @@ class SessionViewModel : ViewModel() {
         return makeTimeString(hours, minutes, seconds)
     }
 
-    fun makeTimeString(hours: Long, minutes: Long, seconds: Long): String {
+    fun minutesStringFromLong(sec: Long): String {
+        val seconds = sec % 60
+        val minutes = (sec / 60 % 60)
+        return makeTimeString(minutes, seconds)
+    }
+
+    private fun makeTimeString(hours: Long, minutes: Long, seconds: Long): String {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+    private fun makeTimeString(minutes: Long, seconds: Long): String {
+        return String.format("%02d:%02d", minutes, seconds)
     }
 
     fun secondsFromString(time: String): Long {
@@ -34,9 +44,30 @@ class SessionViewModel : ViewModel() {
 
     fun avgSpeed(distance: Double, avgTime: Long): String {
         val speed = distance / avgTime.toDouble()
-        val decimalFormat = DecimalFormat("#.##")
 
-        return decimalFormat.format(speed)
+        return truncateDecimal(speed) + " m/s"
+    }
+
+    fun peakSpeed(distance: Double, time: Long): String {
+        if (smallestTime > (time - previousTime)) {
+            smallestTime = time - previousTime
+            previousTime = time
+        }
+
+        val speed = distance / smallestTime
+
+        return truncateDecimal(speed) + " m/s"
+    }
+
+    fun cadenceValue(lapNumber: Int): String {
+        val result = (lapNumber.toDouble() * 60) / lapSeconds
+
+        return truncateDecimal(result)
+    }
+
+    private fun truncateDecimal(value: Double): String {
+        val decimalFormat = DecimalFormat("#.##")
+        return decimalFormat.format(value)
     }
 
 }
