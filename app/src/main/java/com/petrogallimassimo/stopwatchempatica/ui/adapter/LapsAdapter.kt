@@ -2,17 +2,27 @@ package com.petrogallimassimo.stopwatchempatica.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.petrogallimassimo.stopwatchempatica.databinding.ItemLapBinding
 import com.petrogallimassimo.stopwatchempatica.model.LapModel
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.time.Duration
 
 class LapsAdapter :
     ListAdapter<LapModel, LapsAdapter.LapsViewHolder>(LapsDiff) {
 
     private var listLaps = ArrayList<LapModel>()
     private var lapNumber = 1
+
+    val lapsNumberLiveData = MutableLiveData<Int>()
+    val avgTimeLap = MutableLiveData<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LapsViewHolder {
         return LapsViewHolder(
@@ -32,6 +42,7 @@ class LapsAdapter :
 
     fun addLap(time: String) {
         listLaps.add(LapModel(lapNumber = "Lap $lapNumber", time = time))
+        lapsNumberLiveData.postValue(lapNumber)
         lapNumber++
         notifyDataSetChanged()
     }

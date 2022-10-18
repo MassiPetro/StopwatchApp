@@ -58,6 +58,7 @@ class SessionFragment : Fragment() {
             itemDecoration.isLastItemDecorated = false
             rvLaps.addItemDecoration(itemDecoration)
         }
+        setMetrics()
     }
 
     private fun setListeners() {
@@ -113,6 +114,7 @@ class SessionFragment : Fragment() {
 
     private fun lapAction() {
         lapsAdapter.addLap(getTime())
+        viewModel.lapSeconds = viewModel.lapSeconds.plus(viewModel.secondsFromString(getTime()))
     }
 
     private fun resetAction() {
@@ -165,5 +167,16 @@ class SessionFragment : Fragment() {
 
     private fun getTime(): String {
         return binding.stopwatch.text.toString()
+    }
+
+    private fun setMetrics() {
+        with(binding) {
+            lapsAdapter.lapsNumberLiveData.observe(viewLifecycleOwner) {
+                tvLapsValue.text = it.toString()
+                tvAvgTimeLapValue.text = viewModel.avgTimeLap(it).toString()
+                tvAvgSpeedValue.text =
+                    viewModel.avgSpeed(sharedViewModel.selectedDistanceMeters, viewModel.avgTimeLap(it))
+            }
+        }
     }
 }

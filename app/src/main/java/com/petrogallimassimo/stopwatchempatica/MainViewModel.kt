@@ -14,6 +14,7 @@ class MainViewModel (
 
     val footballPlayersLiveData = MutableLiveData<List<FootballPlayerUiModel>>()
     var selectedPlayer = FootballPlayerUiModel()
+    var selectedDistanceMeters: Double = 0.0
 
     fun getFootballPlayers() {
         viewModelScope.launch {
