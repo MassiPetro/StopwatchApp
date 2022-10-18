@@ -3,6 +3,7 @@ package com.petrogallimassimo.stopwatchempatica.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -10,11 +11,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.github.mikephil.charting.components.LimitLine
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.petrogallimassimo.stopwatchempatica.MainViewModel
 import com.petrogallimassimo.stopwatchempatica.R
 import com.petrogallimassimo.stopwatchempatica.StopwatchHelper
 import com.petrogallimassimo.stopwatchempatica.databinding.FragmentSessionBinding
+import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerStatisticsModel
+import com.petrogallimassimo.stopwatchempatica.model.TrainingMetricsModel
 import com.petrogallimassimo.stopwatchempatica.ui.adapter.LapsAdapter
 import kotlinx.coroutines.launch
 import java.util.*
@@ -30,6 +38,7 @@ class SessionFragment : Fragment() {
 
     private val timer = Timer()
     private var previousTime = 0L
+    private val lineValues = ArrayList<Entry>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,6 +78,9 @@ class SessionFragment : Fragment() {
             }
             btnLap.setOnClickListener {
                 resetLapAction()
+            }
+            btnSave.setOnClickListener {
+                saveData()
             }
         }
 
@@ -115,6 +127,9 @@ class SessionFragment : Fragment() {
 
     private fun lapAction() {
         lapsAdapter.addLap(getTime())
+        viewModel.lapsTime = (viewModel.secondsFromString(getTime()) - previousTime).toFloat()
+        //viewModel.lapsTime.add((viewModel.secondsFromString(getTime()) - previousTime).toFloat())
+        //setLineChart(viewModel.lapsTime)
         viewModel.lapSeconds =
             viewModel.lapSeconds.plus(viewModel.secondsFromString(getTime()) - previousTime)
         previousTime = viewModel.secondsFromString(getTime())
@@ -176,7 +191,7 @@ class SessionFragment : Fragment() {
         with(binding) {
             lapsAdapter.lapsNumberLiveData.observe(viewLifecycleOwner) {
                 tvLapsValue.text = it.toString()
-                tvAvgTimeLapValue.text = viewModel.minutesStringFromLong(viewModel.avgTimeLap(it))
+                tvAvgTimeLapValue.text = viewModel.minutesString(viewModel.avgTimeLap(it))
                 tvAvgSpeedValue.text =
                     viewModel.avgSpeed(
                         sharedViewModel.selectedDistanceMeters,
@@ -188,7 +203,106 @@ class SessionFragment : Fragment() {
                         viewModel.secondsFromString(getTime())
                     )
                 tvCadenceValue.text = viewModel.cadenceValue(it)
+
+                setLineChart(viewModel.lapsTime, it.toFloat(), viewModel.avgTimeLap(it).toFloat())
             }
         }
     }
+
+    private fun setLineChart(lapTime: Float, lapNumber: Float, avgTimeLap: Float) {
+        lineValues.add(Entry(lapNumber, lapTime))
+
+        val lineDataset = LineDataSet(lineValues, "Lap Times")
+
+        lineDataset.color =
+            resources.getColor(R.color.md_theme_light_primaryContainer, requireActivity().theme)
+
+        lineDataset.circleRadius = 10f
+        lineDataset.setDrawFilled(true)
+        lineDataset.valueTextSize = 20F
+        lineDataset.fillColor =
+            resources.getColor(R.color.md_theme_light_primaryContainer, requireActivity().theme)
+        lineDataset.setCircleColor(
+            resources.getColor(
+                R.color.md_theme_light_primary,
+                requireActivity().theme
+            )
+        )
+        lineDataset.mode = LineDataSet.Mode.CUBIC_BEZIER
+
+        val avgTimeLine =
+            LimitLine(avgTimeLap, "Avg. Time/Lap ${viewModel.minutesString(avgTimeLap)}")
+        avgTimeLine.lineWidth = 4f
+        avgTimeLine.lineColor = resources.getColor(
+            R.color.md_theme_light_secondary,
+            requireActivity().theme
+        )
+        avgTimeLine.labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
+        avgTimeLine.textSize = 10f
+
+        val data = LineData(lineDataset)
+        data.setValueFormatter(TimeFormatter())
+        with(binding) {
+            lineChart.description.isEnabled = false
+            lineChart.xAxis.granularity = 1F
+            lineChart.axisLeft.setDrawLimitLinesBehindData(true)
+            lineChart.axisLeft.removeAllLimitLines()
+            lineChart.axisLeft.addLimitLine(avgTimeLine)
+            lineChart.data = data
+            lineChart.invalidate()
+            lineChart.visibility = VISIBLE
+        }
+    }
+
+    private fun saveData() {
+        stopwatchHelper.setStopTime(Date())
+        stopTimer()
+        sharedViewModel.footballPlayerStatisticsModelList.apply {
+            if (this.isEmpty()) {
+                this.add(
+                    FootballPlayerStatisticsModel(
+                        sharedViewModel.selectedPlayer,
+                        TrainingMetricsModel(
+                            peakSpeed = binding.tvPeakSpeedValue.text.toString(),
+                            lapsNumber = binding.tvLapsValue.text.toString()
+                        )
+                    )
+                )
+            } else {
+                this.map {
+                    if (it.footballPlayer == sharedViewModel.selectedPlayer) {
+                        it.metrics = TrainingMetricsModel(
+                            peakSpeed = binding.tvPeakSpeedValue.text.toString(),
+                            lapsNumber = binding.tvLapsValue.text.toString()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    inner class TimeFormatter : ValueFormatter() {
+        override fun getPointLabel(entry: Entry): String {
+            return viewModel.minutesString(entry.y)
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -16,4 +16,5 @@
     <string name="avg_speed">Avg. Speed</string>
     <string name="peak_speed">Peak Speed</string>
     <string name="cadence">Cadence</string>
+    <string name="save">Save training data</string>
 </resources>

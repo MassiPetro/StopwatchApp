@@ -70,6 +70,7 @@
                 tools:listitem="@layout/item_lap" />
 
             <LinearLayout
+                android:id="@+id/layout_metrics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background"
@@ -80,10 +81,11 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_metrics"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/robotoflex"
+                    android:gravity="center_horizontal"
                     android:text="@string/metrics"
                     android:textColor="@color/md_theme_light_onPrimary"
                     android:textFontWeight="600"
@@ -242,6 +244,26 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_metrics" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp"
+                android:text="@string/save"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lineChart" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

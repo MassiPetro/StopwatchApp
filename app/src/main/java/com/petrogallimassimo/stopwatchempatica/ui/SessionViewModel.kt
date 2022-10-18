@@ -6,6 +6,7 @@ import java.text.DecimalFormat
 class SessionViewModel : ViewModel() {
 
     var lapSeconds: Long = 0
+    var lapsTime = 0F
     private var smallestTime = Long.MAX_VALUE
     private var previousTime = 0L
 
@@ -16,9 +17,16 @@ class SessionViewModel : ViewModel() {
         return makeTimeString(hours, minutes, seconds)
     }
 
-    fun minutesStringFromLong(sec: Long): String {
+    fun minutesString(sec: Long): String {
         val seconds = sec % 60
         val minutes = (sec / 60 % 60)
+        return makeTimeString(minutes, seconds)
+    }
+
+    fun minutesString(sec: Float): String {
+        val secLong = sec.toLong()
+        val seconds = secLong % 60
+        val minutes = (secLong / 60 % 60)
         return makeTimeString(minutes, seconds)
     }
 
@@ -28,6 +36,10 @@ class SessionViewModel : ViewModel() {
 
     private fun makeTimeString(minutes: Long, seconds: Long): String {
         return String.format("%02d:%02d", minutes, seconds)
+    }
+
+    private fun makeTimeString(minutes: Float, seconds: Float): String {
+        return String.format("%02f:%02f", minutes, seconds)
     }
 
     fun secondsFromString(time: String): Long {

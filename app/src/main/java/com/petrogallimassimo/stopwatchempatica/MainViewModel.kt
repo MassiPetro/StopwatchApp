@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerUiModel
 import com.petrogallimassimo.stopwatchempatica.datasource.Repository
+import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerStatisticsModel
 import kotlinx.coroutines.launch
 
 class MainViewModel (
@@ -13,6 +14,7 @@ class MainViewModel (
 ) : ViewModel() {
 
     val footballPlayersLiveData = MutableLiveData<List<FootballPlayerUiModel>>()
+    val footballPlayerStatisticsModelList = ArrayList<FootballPlayerStatisticsModel>()
     var selectedPlayer = FootballPlayerUiModel()
     var selectedDistanceMeters: Double = 0.0
 
