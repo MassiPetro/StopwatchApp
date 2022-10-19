@@ -1,6 +1,7 @@
 package com.petrogallimassimo.stopwatchempatica.model
 
 data class FootballPlayerStatisticsModel(
+    val id: String,
     var footballPlayer: FootballPlayerUiModel,
     var metrics: TrainingMetricsModel
 )

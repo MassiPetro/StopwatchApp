@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">StopwatchEmpatica</string>
-    <string name="main_screen">Main</string>
+    <string name="home_screen">Home</string>
+    <string name="leaderboard">Leaderboard</string>
     <string name="distance">Distance</string>
     <string name="input_helper">Input the lap distance in meters</string>
     <string name="next">Continue →</string>
@@ -16,5 +17,7 @@
     <string name="avg_speed">Avg. Speed</string>
     <string name="peak_speed">Peak Speed</string>
     <string name="cadence">Cadence</string>
-    <string name="save">Save training data</string>
+    <string name="end">End training session</string>
+    <string name="explosiveness">Explosiveness</string>
+    <string name="endurance">Endurance</string>
 </resources>

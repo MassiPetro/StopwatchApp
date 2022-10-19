@@ -1,6 +1,7 @@
 package com.petrogallimassimo.stopwatchempatica.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -39,6 +40,7 @@ class SessionFragment : Fragment() {
     private val timer = Timer()
     private var previousTime = 0L
     private val lineValues = ArrayList<Entry>()
+    private var hasStatistics = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +48,10 @@ class SessionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSessionBinding.inflate(inflater, container, false)
+
+        hasStatistics = false
+        viewModel.lapSeconds = 0
+        viewModel.lapsTime = 0F
 
         stopwatchHelper = StopwatchHelper(requireContext())
         setViews()
@@ -83,7 +89,6 @@ class SessionFragment : Fragment() {
                 saveData()
             }
         }
-
     }
 
     private fun setPlayerDetails() {
@@ -261,6 +266,7 @@ class SessionFragment : Fragment() {
             if (this.isEmpty()) {
                 this.add(
                     FootballPlayerStatisticsModel(
+                        id = sharedViewModel.selectedPlayer.last.toString(),
                         sharedViewModel.selectedPlayer,
                         TrainingMetricsModel(
                             peakSpeed = binding.tvPeakSpeedValue.text.toString(),
@@ -269,8 +275,20 @@ class SessionFragment : Fragment() {
                     )
                 )
             } else {
-                this.map {
-                    if (it.footballPlayer == sharedViewModel.selectedPlayer) {
+                this.forEach {
+                    if (it.footballPlayer != sharedViewModel.selectedPlayer && !hasStatistics) {
+                        this.add(
+                            FootballPlayerStatisticsModel(
+                                id = sharedViewModel.selectedPlayer.last.toString(),
+                                sharedViewModel.selectedPlayer,
+                                TrainingMetricsModel(
+                                    peakSpeed = binding.tvPeakSpeedValue.text.toString(),
+                                    lapsNumber = binding.tvLapsValue.text.toString()
+                                )
+                            )
+                        )
+                    } else if (it.footballPlayer == sharedViewModel.selectedPlayer){
+                        hasStatistics = true
                         it.metrics = TrainingMetricsModel(
                             peakSpeed = binding.tvPeakSpeedValue.text.toString(),
                             lapsNumber = binding.tvLapsValue.text.toString()

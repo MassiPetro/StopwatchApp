@@ -28,4 +28,9 @@
         android:name="com.petrogallimassimo.stopwatchempatica.ui.SessionFragment"
         android:label="SessionFragment"
         tools:layout="@layout/fragment_session"/>
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.petrogallimassimo.stopwatchempatica.ui.LeaderboardFragment"
+        android:label="LeaderboardFragment"
+        tools:layout="@layout/fragment_leaderboard"/>
 </navigation>

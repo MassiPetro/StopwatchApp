@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/main_screen"
+        android:id="@+id/mainScreenFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
-        android:title="@string/main_screen"/>
+        android:icon="@drawable/ic_home"
+        android:title="@string/home_screen"/>
+    <item
+        android:id="@+id/leaderboardFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_leaderboard"
+        android:title="@string/leaderboard"/>
 </menu>
