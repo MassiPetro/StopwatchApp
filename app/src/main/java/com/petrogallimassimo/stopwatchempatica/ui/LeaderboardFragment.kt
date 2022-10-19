@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import com.petrogallimassimo.stopwatchempatica.MainConstants.ChipSelected
 import com.petrogallimassimo.stopwatchempatica.MainViewModel
 import com.petrogallimassimo.stopwatchempatica.R
 import com.petrogallimassimo.stopwatchempatica.databinding.FragmentLeaderboardBinding
@@ -40,18 +41,19 @@ class LeaderboardFragment : Fragment() {
         itemDecoration.dividerInsetStart = 10
         itemDecoration.dividerInsetEnd = 10
         binding.rvFootballPlayersStatistics.addItemDecoration(itemDecoration)
-
+        footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.NONE)
         footballPlayersStatisticsAdapter.replaceItems(sharedViewModel.footballPlayerStatisticsModelList)
     }
 
     private fun setListeners() {
         binding.chipExpl.setOnClickListener {
             footballPlayersStatisticsAdapter.sortByPeakSpeed()
-
+            footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.EXPLOSIVENESS)
         }
 
         binding.chipEnd.setOnClickListener {
             footballPlayersStatisticsAdapter.sortByLaps()
+            footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.ENDURANCE)
         }
     }
 }
