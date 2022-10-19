@@ -1,15 +1,16 @@
 package com.petrogallimassimo.stopwatchempatica.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mikephil.charting.components.LimitLine
@@ -57,10 +58,14 @@ class SessionFragment : Fragment() {
         setViews()
         setListeners()
         runStopWatch()
+        resetAction()
 
         return binding.root
     }
 
+    /**
+     * Setup view
+     */
     private fun setViews() {
         with(binding) {
             setPlayerDetails()
@@ -75,8 +80,21 @@ class SessionFragment : Fragment() {
             rvLaps.addItemDecoration(itemDecoration)
         }
         setMetrics()
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    saveData()
+                    findNavController().navigate(R.id.action_sessionFragment_to_mainScreenFragment)
+                }
+            }
+        )
     }
 
+    /**
+     * Setup click listeners for buttons
+     */
     private fun setListeners() {
         with(binding) {
             btnStart.setOnClickListener {
@@ -87,10 +105,14 @@ class SessionFragment : Fragment() {
             }
             btnSave.setOnClickListener {
                 saveData()
+                findNavController().navigate(R.id.action_sessionFragment_to_mainScreenFragment)
             }
         }
     }
 
+    /**
+     *  Setup view with player informations
+     */
     private fun setPlayerDetails() {
         with(binding) {
             itemFootballPlayer.profileImage.let {
@@ -105,6 +127,9 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Handle start and stop of Stopwatch
+     */
     private fun runStopWatch() {
         if (stopwatchHelper.timerCounting()) {
             startTimer()
@@ -133,8 +158,6 @@ class SessionFragment : Fragment() {
     private fun lapAction() {
         lapsAdapter.addLap(getTime())
         viewModel.lapsTime = (viewModel.secondsFromString(getTime()) - previousTime).toFloat()
-        //viewModel.lapsTime.add((viewModel.secondsFromString(getTime()) - previousTime).toFloat())
-        //setLineChart(viewModel.lapsTime)
         viewModel.lapSeconds =
             viewModel.lapSeconds.plus(viewModel.secondsFromString(getTime()) - previousTime)
         previousTime = viewModel.secondsFromString(getTime())
@@ -287,7 +310,7 @@ class SessionFragment : Fragment() {
                                 )
                             )
                         )
-                    } else if (it.footballPlayer == sharedViewModel.selectedPlayer){
+                    } else if (it.footballPlayer == sharedViewModel.selectedPlayer) {
                         hasStatistics = true
                         it.metrics = TrainingMetricsModel(
                             peakSpeed = binding.tvPeakSpeedValue.text.toString(),
