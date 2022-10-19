@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import com.petrogallimassimo.stopwatchempatica.MainApplication
 import com.petrogallimassimo.stopwatchempatica.MainViewModel
 import com.petrogallimassimo.stopwatchempatica.R
 import com.petrogallimassimo.stopwatchempatica.databinding.DialogInputDistanceBinding
@@ -18,13 +19,19 @@ import com.petrogallimassimo.stopwatchempatica.datasource.ApiFactory
 import com.petrogallimassimo.stopwatchempatica.datasource.ApiService
 import com.petrogallimassimo.stopwatchempatica.datasource.Repository
 import com.petrogallimassimo.stopwatchempatica.ui.adapter.FootballPlayersAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainScreenFragment : Fragment() {
 
     private val repository = Repository(ApiFactory.buildService(ApiService::class.java))
 
+
     private val viewModel: MainViewModel by activityViewModels {
-        MainViewModel.ViewModelFactory(repository)
+        MainViewModel.ViewModelFactory(
+            repository,
+            (requireActivity().application as MainApplication).footballPlayerStatisticsRepository
+        )
     }
     private lateinit var binding: FragmentMainScreenBinding
     private lateinit var footballPlayersAdapter: FootballPlayersAdapter

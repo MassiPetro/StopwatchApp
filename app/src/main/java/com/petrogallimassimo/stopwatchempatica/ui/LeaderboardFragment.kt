@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.petrogallimassimo.stopwatchempatica.MainConstants.ChipSelected
@@ -13,7 +14,13 @@ import com.petrogallimassimo.stopwatchempatica.MainViewModel
 import com.petrogallimassimo.stopwatchempatica.R
 import com.petrogallimassimo.stopwatchempatica.databinding.FragmentLeaderboardBinding
 import com.petrogallimassimo.stopwatchempatica.ui.adapter.FootballPlayerStatisticsAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class LeaderboardFragment : Fragment() {
 
     private lateinit var binding: FragmentLeaderboardBinding
@@ -28,6 +35,7 @@ class LeaderboardFragment : Fragment() {
 
         setViews()
         setListeners()
+        setObservers()
 
         return binding.root
     }
@@ -42,7 +50,6 @@ class LeaderboardFragment : Fragment() {
         itemDecoration.dividerInsetEnd = 10
         binding.rvFootballPlayersStatistics.addItemDecoration(itemDecoration)
         footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.NONE)
-        footballPlayersStatisticsAdapter.replaceItems(sharedViewModel.footballPlayerStatisticsModelList)
     }
 
     private fun setListeners() {
@@ -54,6 +61,12 @@ class LeaderboardFragment : Fragment() {
         binding.chipEnd.setOnClickListener {
             footballPlayersStatisticsAdapter.sortByLaps()
             footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.ENDURANCE)
+        }
+    }
+
+    private fun setObservers() {
+        sharedViewModel.footballPlayersStatsDB.observe(viewLifecycleOwner) {
+            footballPlayersStatisticsAdapter.replaceItems(it)
         }
     }
 }

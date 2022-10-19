@@ -1,8 +1,10 @@
 package com.petrogallimassimo.stopwatchempatica.ui
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import java.text.DecimalFormat
 
+@ViewModelScoped
 class SessionViewModel : ViewModel() {
 
     var lapSeconds: Long = 0
@@ -36,10 +38,6 @@ class SessionViewModel : ViewModel() {
 
     private fun makeTimeString(minutes: Long, seconds: Long): String {
         return String.format("%02d:%02d", minutes, seconds)
-    }
-
-    private fun makeTimeString(minutes: Float, seconds: Float): String {
-        return String.format("%02f:%02f", minutes, seconds)
     }
 
     fun secondsFromString(time: String): Long {

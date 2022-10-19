@@ -1,10 +1,19 @@
 package com.petrogallimassimo.stopwatchempatica.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "FootballPlayerEntity")
 data class FootballPlayerStatisticsModel(
-    val id: String,
-    var footballPlayer: FootballPlayerUiModel,
-    var metrics: TrainingMetricsModel
-)
+    @Embedded var footballPlayer: FootballPlayerUiModel,
+    @Embedded var metrics: TrainingMetricsModel
+) {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Long = 0
+}
 
 data class FootballPlayerUiModel(
     val title: String? = null,

@@ -26,9 +26,13 @@ import com.petrogallimassimo.stopwatchempatica.databinding.FragmentSessionBindin
 import com.petrogallimassimo.stopwatchempatica.model.FootballPlayerStatisticsModel
 import com.petrogallimassimo.stopwatchempatica.model.TrainingMetricsModel
 import com.petrogallimassimo.stopwatchempatica.ui.adapter.LapsAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
+@AndroidEntryPoint
 class SessionFragment : Fragment() {
 
     private lateinit var binding: FragmentSessionBinding
@@ -289,7 +293,6 @@ class SessionFragment : Fragment() {
             if (this.isEmpty()) {
                 this.add(
                     FootballPlayerStatisticsModel(
-                        id = sharedViewModel.selectedPlayer.last.toString(),
                         sharedViewModel.selectedPlayer,
                         TrainingMetricsModel(
                             peakSpeed = binding.tvPeakSpeedValue.text.toString(),
@@ -302,7 +305,6 @@ class SessionFragment : Fragment() {
                     if (it.footballPlayer != sharedViewModel.selectedPlayer && !hasStatistics) {
                         this.add(
                             FootballPlayerStatisticsModel(
-                                id = sharedViewModel.selectedPlayer.last.toString(),
                                 sharedViewModel.selectedPlayer,
                                 TrainingMetricsModel(
                                     peakSpeed = binding.tvPeakSpeedValue.text.toString(),
@@ -317,6 +319,14 @@ class SessionFragment : Fragment() {
                             lapsNumber = binding.tvLapsValue.text.toString()
                         )
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            sharedViewModel.footballPlayerStatisticsModelList.forEach {
+                withContext(Dispatchers.IO) {
+                    sharedViewModel.insert(it)
                 }
             }
         }
