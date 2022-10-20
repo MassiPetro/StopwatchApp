@@ -20,16 +20,27 @@ class MainViewModel(
     private val footballPlayerStatisticsRepository: FootballPlayerStatisticsRepository
 ) : ViewModel() {
 
+    // livedata of football players from API passed to adapter
     val footballPlayersLiveData = MutableLiveData<List<FootballPlayerUiModel>>()
+
+    // list to save football players statistics
     val footballPlayerStatisticsModelList = ArrayList<FootballPlayerStatisticsModel>()
+
+    // selected player from MainScreenFragment
     var selectedPlayer = FootballPlayerUiModel()
+
+    //selected distance in meters
     var selectedDistanceMeters: Double = 0.0
 
+    // football players statistics saved on DB
     val footballPlayersStatsDB: LiveData<List<FootballPlayerStatisticsModel>> =
         footballPlayerStatisticsRepository.getAll().asLiveData()
 
     var converterJob: Job? = null
 
+    /**
+     * Get football players from API
+     */
     fun getFootballPlayers() {
         viewModelScope.launch {
             repository.getFootballPlayers().collect {
@@ -38,9 +49,15 @@ class MainViewModel(
         }
     }
 
+    /**
+     * Save football players statistics on DB
+     */
     suspend fun insert(footballPlayerStatisticsModel: FootballPlayerStatisticsModel) =
         footballPlayerStatisticsRepository.insert(footballPlayerStatisticsModel)
 
+    /**
+     * Job to convert football players statistics to string
+     */
     fun convertDataToString(list: List<FootballPlayerStatisticsModel>, callback: () -> Unit) {
         Log.d("JOBCONVERTER", "START")
         converterJob = viewModelScope.launch {

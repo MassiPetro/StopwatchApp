@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class FootballPlayerStatisticsRepository @Inject constructor(private val footBallPlayerStatisticsDao: FootBallPlayerStatisticsDao) {
 
     @WorkerThread
-    suspend fun insert(footballPlayerStatisticsModel: FootballPlayerStatisticsModel) {
+    fun insert(footballPlayerStatisticsModel: FootballPlayerStatisticsModel) {
         footBallPlayerStatisticsDao.insertAll(footballPlayerStatisticsModel)
     }
 

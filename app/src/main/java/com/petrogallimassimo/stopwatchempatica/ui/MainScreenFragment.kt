@@ -53,12 +53,18 @@ class MainScreenFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Setup observer to add items to Adapter
+     */
     private fun setObservers() {
         viewModel.footballPlayersLiveData.observe(viewLifecycleOwner) {
             footballPlayersAdapter.replaceItems(it)
         }
     }
 
+    /**
+     * Setup view
+     */
     private fun setView() {
         footballPlayersAdapter = FootballPlayersAdapter(requireContext()) { player ->
             viewModel.selectedPlayer = player
@@ -66,7 +72,6 @@ class MainScreenFragment : Fragment() {
                 .inflate(R.layout.dialog_input_distance, null, false)
             inputDistanceBinding = DialogInputDistanceBinding.inflate(layoutInflater)
             showInputDistanceDialog()
-            //findNavController().navigate(R.id.action_mainScreenFragment_to_inputFragment)
         }
         binding.rvFootballPlayers.adapter = footballPlayersAdapter
         val itemDecoration = MaterialDividerItemDecoration(requireContext(), VERTICAL)
@@ -79,6 +84,9 @@ class MainScreenFragment : Fragment() {
         materialAlertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
     }
 
+    /**
+     * Show dialog to input distance
+     */
     private fun showInputDistanceDialog() {
         materialAlertDialogBuilder.setView(inputDistanceBinding.root)
             .setTitle("Input Distance")

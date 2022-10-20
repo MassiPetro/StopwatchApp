@@ -86,6 +86,7 @@ class SessionFragment : Fragment() {
         }
         setMetrics()
 
+        // override onbackpressed to save data
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -115,6 +116,9 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Setup observer of football players statistics saved on DB
+     */
     private fun setObservers() {
         sharedViewModel.footballPlayersStatsDB.observe(viewLifecycleOwner) {
             sharedViewModel.footballPlayerStatisticsModelList.clear()
@@ -140,7 +144,7 @@ class SessionFragment : Fragment() {
     }
 
     /**
-     * Handle start and stop of Stopwatch
+     * Handle Stopwatch
      */
     private fun runStopWatch() {
         if (stopwatchHelper.timerCounting()) {
@@ -167,6 +171,9 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Get lap time
+     */
     private fun lapAction() {
         lapsAdapter.addLap(getTime())
         viewModel.lapsTime = (viewModel.secondsFromString(getTime()) - previousTime).toFloat()
@@ -175,6 +182,9 @@ class SessionFragment : Fragment() {
         previousTime = viewModel.secondsFromString(getTime())
     }
 
+    /**
+     * Reset timer
+     */
     private fun resetAction() {
         stopwatchHelper.setStopTime(null)
         stopwatchHelper.setStartTime(null)
@@ -183,18 +193,27 @@ class SessionFragment : Fragment() {
         binding.stopwatch.text = viewModel.timeStringFromLong(0)
     }
 
+    /**
+     * Stop timer
+     */
     private fun stopTimer() {
         stopwatchHelper.setTimerCounting(false)
         binding.btnStart.text = getString(R.string.start)
         binding.btnLap.text = getString(R.string.reset)
     }
 
+    /**
+     * Start timer
+     */
     private fun startTimer() {
         stopwatchHelper.setTimerCounting(true)
         binding.btnStart.text = getString(R.string.stop)
         binding.btnLap.text = getString(R.string.lap)
     }
 
+    /**
+     * Handle start and stop timer actions
+     */
     private fun startStopAction() {
         if (stopwatchHelper.timerCounting()) {
             stopwatchHelper.setStopTime(Date())
@@ -210,6 +229,9 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Handle reset and lap timer actions
+     */
     private fun resetLapAction() {
         if (stopwatchHelper.timerCounting()) {
             lapAction()
@@ -218,15 +240,24 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Calculate time of restart
+     */
     private fun calcRestartTime(): Date {
         val diff = stopwatchHelper.startTime()!!.time - stopwatchHelper.stopTime()!!.time
         return Date(System.currentTimeMillis() + diff)
     }
 
+    /**
+     * Get time from Stopwatch
+     */
     private fun getTime(): String {
         return binding.stopwatch.text.toString()
     }
 
+    /**
+     * Setup view of Metrics
+     */
     private fun setMetrics() {
         with(binding) {
             lapsAdapter.lapsNumberLiveData.observe(viewLifecycleOwner) {
@@ -249,6 +280,9 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Setup Chart
+     */
     private fun setLineChart(lapTime: Float, lapNumber: Float, avgTimeLap: Float) {
         lineValues.add(Entry(lapNumber, lapTime))
 
@@ -294,6 +328,9 @@ class SessionFragment : Fragment() {
         }
     }
 
+    /**
+     * Save data on DB
+     */
     private fun saveData() {
         hasStatistics = false
         stopwatchHelper.setStopTime(Date())

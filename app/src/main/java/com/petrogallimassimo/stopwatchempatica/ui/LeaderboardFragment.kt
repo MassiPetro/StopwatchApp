@@ -37,6 +37,9 @@ class LeaderboardFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Setup view
+     */
     private fun setViews() {
         footballPlayersStatisticsAdapter = FootballPlayerStatisticsAdapter(requireContext())
         binding.rvFootballPlayersStatistics.adapter = footballPlayersStatisticsAdapter
@@ -49,6 +52,9 @@ class LeaderboardFragment : Fragment() {
         footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.NONE)
     }
 
+    /**
+     * Setup listeners of buttons and chips
+     */
     private fun setListeners() {
         binding.chipExpl.setOnClickListener {
             footballPlayersStatisticsAdapter.sortByPeakSpeed()
@@ -69,6 +75,9 @@ class LeaderboardFragment : Fragment() {
         }
     }
 
+    /**
+     * Setup observer to add items to Adapter
+     */
     private fun setObservers() {
         sharedViewModel.footballPlayersStatsDB.observe(viewLifecycleOwner) {
             footballPlayersStatisticsAdapter.replaceItems(it)

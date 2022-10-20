@@ -17,6 +17,7 @@ class MainApplication : Application() {
     }
     lateinit var footballPlayerStatisticsRepository: FootballPlayerStatisticsRepository
 
+    // DI of football players statistics DB repository
     init {
         applicationScope.launch {
             footballPlayerStatisticsRepository =
