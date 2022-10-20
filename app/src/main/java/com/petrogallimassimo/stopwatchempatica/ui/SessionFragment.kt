@@ -61,6 +61,7 @@ class SessionFragment : Fragment() {
         stopwatchHelper = StopwatchHelper(requireContext())
         setViews()
         setListeners()
+        setObservers()
         runStopWatch()
         resetAction()
 
@@ -111,6 +112,13 @@ class SessionFragment : Fragment() {
                 saveData()
                 findNavController().navigate(R.id.action_sessionFragment_to_mainScreenFragment)
             }
+        }
+    }
+
+    private fun setObservers() {
+        sharedViewModel.footballPlayersStatsDB.observe(viewLifecycleOwner) {
+            sharedViewModel.footballPlayerStatisticsModelList.clear()
+            sharedViewModel.footballPlayerStatisticsModelList.addAll(it)
         }
     }
 
@@ -287,6 +295,7 @@ class SessionFragment : Fragment() {
     }
 
     private fun saveData() {
+        hasStatistics = false
         stopwatchHelper.setStopTime(Date())
         stopTimer()
         sharedViewModel.footballPlayerStatisticsModelList.apply {
@@ -302,23 +311,25 @@ class SessionFragment : Fragment() {
                 )
             } else {
                 this.forEach {
-                    if (it.footballPlayer != sharedViewModel.selectedPlayer && !hasStatistics) {
-                        this.add(
-                            FootballPlayerStatisticsModel(
-                                sharedViewModel.selectedPlayer,
-                                TrainingMetricsModel(
-                                    peakSpeed = binding.tvPeakSpeedValue.text.toString(),
-                                    lapsNumber = binding.tvLapsValue.text.toString()
-                                )
-                            )
-                        )
-                    } else if (it.footballPlayer == sharedViewModel.selectedPlayer) {
+                    if (it.footballPlayer == sharedViewModel.selectedPlayer && !hasStatistics) {
                         hasStatistics = true
                         it.metrics = TrainingMetricsModel(
                             peakSpeed = binding.tvPeakSpeedValue.text.toString(),
                             lapsNumber = binding.tvLapsValue.text.toString()
                         )
                     }
+                }
+                if (!hasStatistics) {
+                    hasStatistics = true
+                    this.add(
+                        FootballPlayerStatisticsModel(
+                            sharedViewModel.selectedPlayer,
+                            TrainingMetricsModel(
+                                peakSpeed = binding.tvPeakSpeedValue.text.toString(),
+                                lapsNumber = binding.tvLapsValue.text.toString()
+                            )
+                        )
+                    )
                 }
             }
         }

@@ -22,9 +22,17 @@ data class FootballPlayerUiModel(
     val large: String? = null,
     val medium: String? = null,
     val thumbnail: String? = null
-)
+) {
+    override fun toString(): String {
+        return "FootballPlayer Informations: (title=$title, first=$first, last=$last, large=$large, medium=$medium, thumbnail=$thumbnail)"
+    }
+}
 
 data class TrainingMetricsModel(
     val peakSpeed: String? = null,
     val lapsNumber: String? = null
-)
+) {
+    override fun toString(): String {
+        return "FootballPlayer Training Metrics: (peakSpeed=$peakSpeed, lapsNumber=$lapsNumber)"
+    }
+}
