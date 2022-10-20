@@ -4,21 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import com.google.android.material.snackbar.Snackbar
 import com.petrogallimassimo.stopwatchempatica.MainConstants.ChipSelected
 import com.petrogallimassimo.stopwatchempatica.MainViewModel
 import com.petrogallimassimo.stopwatchempatica.R
 import com.petrogallimassimo.stopwatchempatica.databinding.FragmentLeaderboardBinding
 import com.petrogallimassimo.stopwatchempatica.ui.adapter.FootballPlayerStatisticsAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class LeaderboardFragment : Fragment() {
@@ -62,11 +59,21 @@ class LeaderboardFragment : Fragment() {
             footballPlayersStatisticsAdapter.sortByLaps()
             footballPlayersStatisticsAdapter.setChipSelected(ChipSelected.ENDURANCE)
         }
+
+        binding.floatingActionButton.setOnClickListener {
+            sharedViewModel.converterJob?.cancel()
+            sharedViewModel.convertDataToString(sharedViewModel.footballPlayerStatisticsModelList) {
+                Toast.makeText(context, R.string.alert_csv, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 
     private fun setObservers() {
         sharedViewModel.footballPlayersStatsDB.observe(viewLifecycleOwner) {
             footballPlayersStatisticsAdapter.replaceItems(it)
+            sharedViewModel.footballPlayerStatisticsModelList.clear()
+            sharedViewModel.footballPlayerStatisticsModelList.addAll(it)
         }
     }
 }
